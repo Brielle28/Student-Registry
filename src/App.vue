@@ -159,6 +159,12 @@ const cancelEdit = (index) => {
               </tr>
             </thead>
             <tbody>
+              <tr v-if="!record || record.length === 0" class="">
+                <!-- This cell spans all columns -->
+                <td :colspan="5" class="text-center">
+                  <p class="pt-2 font-bold text-red-500 md:text-[20px]">No records found</p>
+                </td>
+              </tr>
               <!-- Use filteredQuery for records -->
               <tr v-for="(record, index) in filteredQuery" :key="index">
                 <td class="px-4 py-2 font-normal border border-gray-300">
