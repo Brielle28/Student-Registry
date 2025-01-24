@@ -6,23 +6,24 @@ const email = ref("");
 const isEditable = ref(false);
 const records = ref([]);
 const searchQuery = ref("");
-const error = ref(false)
+const error = ref(false);
 
 const filteredQuery = computed(() => {
   // Filter records based on the search query
-  return records.value.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    item.age.toString().includes(searchQuery.value) ||
-    item.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return records.value.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.age.toString().includes(searchQuery.value) ||
+      item.email.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
 const addRecord = () => {
   if (!name.value || !age.value || !email.value) {
-    error.value = true
+    error.value = true;
     return;
-  }else {
-    error.value = false
+  } else {
+    error.value = false;
   }
   records.value.push({
     name: name.value,
@@ -48,6 +49,21 @@ const Delete = (index) => {
     records.value.splice(recordIndex, 1);
   }
 };
+
+const editRecord = (index) => {
+  filteredQuery.value[index].edit = true;
+};
+
+const saveEdit = (index) => {
+  const record = filteredQuery.value[index];
+  if (record.name && record.age && record.email) {
+    record.edit = false;
+  }
+};
+
+const cancelEdit = (index) => {
+  filteredQuery.value[index].edit = false;
+};
 </script>
 
 <template>
@@ -56,7 +72,9 @@ const Delete = (index) => {
       class="w-full md:w-[90%] px-[10px] md:px-[25px] flex flex-col md:flex-row items-start justify-between shadow-2xl rounded-[5px] py-10"
     >
       <!-- Form Section -->
-      <div class="w-full md:w-[43%] flex flex-col items-start justify-start md:px-2">
+      <div
+        class="w-full md:w-[43%] flex flex-col items-start justify-start md:px-2"
+      >
         <h1 class="font-bold text-[25px] md:text-[30px] md:mt-10">
           Student Registration
         </h1>
@@ -82,7 +100,9 @@ const Delete = (index) => {
             v-model="email"
             class="pl-3 w-full bg-transparent rounded-[6px] py-1 md:py-2 outline-none border-2 border-gray-400"
           />
-          <p v-if="error" class="text-sm font-light text-red-500"> All fields must be filled </p>
+          <p v-if="error" class="text-sm font-light text-red-500">
+            All fields must be filled
+          </p>
           <button
             type="submit"
             class="w-[120px] h-[30px] md:w-[160px] md:mt-[10px] md:h-[45px] bg-blue-600 rounded-[5px] text-white md:text-[18px] text-[13px]"
@@ -97,7 +117,9 @@ const Delete = (index) => {
         <h1 class="font-bold text-[25px] md:text-[30px] mt-7 md:mt-10">
           Records
         </h1>
-        <div class="flex items-center justify-between w-full mt-[10px] text-center md:mt-5">
+        <div
+          class="flex items-center justify-between w-full mt-[10px] text-center md:mt-5"
+        >
           <input
             type="search"
             v-model="searchQuery"
@@ -140,21 +162,51 @@ const Delete = (index) => {
               <!-- Use filteredQuery for records -->
               <tr v-for="(record, index) in filteredQuery" :key="index">
                 <td class="px-4 py-2 font-normal border border-gray-300">
-                  {{ record.name }}
+                  <!-- {{ record.name }} -->
+                  <span v-if="!record.edit">{{ record.name }}</span>
+                  <input
+                    v-else
+                    v-model="record.name"
+                    type="text"
+                    class="md:w-[100px]"
+                  />
+                </td>
+                <td class="px-4 py-2 font-normal border-2 border-gray-300">
+                  <!-- {{ record.age }} -->
+                  <span v-if="!record.edit">{{ record.age }}</span>
+                  <input
+                    v-else
+                    v-model="record.age"
+                    type="number"
+                    class="md:w-[50px]"
+                  />
                 </td>
                 <td class="px-4 py-2 font-normal border border-gray-300">
-                  {{ record.age }}
-                </td>
-                <td class="px-4 py-2 font-normal border border-gray-300">
-                  {{ record.email }}
+                  <span v-if="!record.edit">{{ record.email }}</span>
+                  <input v-else v-model="record.email" type="text" />
                 </td>
                 <td class="px-1 py-1 border border-gray-300">
                   <button
-                    v-if="record.edit === false"
-                    class="bg-blue-600 font-medium w-full md:py-[6px] rounded-[3px] text-white"
+                    v-if="!record.edit"
+                    @click="editRecord(index)"
+                    class="bg-blue-600 px-1 py-[6px] text-white rounded-[3px] w-full"
                   >
                     Edit
                   </button>
+                  <div v-else class="flex items-center w-full justify-evenly">
+                    <button @click="saveEdit(index)">
+                      <font-awesome-icon
+                        :icon="['fas', 'check']"
+                        class="text-[25px] font-bold hover:text-blue-600"
+                      />
+                    </button>
+                    <button @click="cancelEdit(index)">
+                      <font-awesome-icon
+                        class="text-[20px] font-bold hover:text-yellow-600"
+                        :icon="['fas', 'x']"
+                      />
+                    </button>
+                  </div>
                 </td>
                 <td class="px-1 py-1 border border-gray-300">
                   <button
@@ -171,11 +223,11 @@ const Delete = (index) => {
                     <font-awesome-icon
                       :icon="['fas', 'check']"
                       @click="Delete(index)"
-                      class="text-[25px] font-bold text-red-500"
+                      class="text-[25px] font-bold hover:text-red-600"
                     />
                     <font-awesome-icon
                       @click="toggleDelete(index)"
-                      class="text-[20px] font-bold text-yellow-500"
+                      class="text-[20px] font-bold hover:text-yellow-600"
                       :icon="['fas', 'x']"
                     />
                   </button>
