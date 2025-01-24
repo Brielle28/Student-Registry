@@ -119,7 +119,7 @@ npm run lint
 4. Utilize the search bar to quickly find specific records.
 
 ## Demo
-Check out the live demo of the application [here](#).
+Check out the live demo of the application [here](https://student-registry-6np3cwcj0-brielle28s-projects.vercel.app/).
 
 https://github.com/user-attachments/assets/8536bbd0-c354-42c1-b5dc-3fed60525cbf
 
