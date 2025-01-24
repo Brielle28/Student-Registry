@@ -159,16 +159,15 @@ const cancelEdit = (index) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-if="!record || record.length === 0" class="">
-                <!-- This cell spans all columns -->
-                <td :colspan="5" class="text-center">
-                  <p class="pt-2 font-bold text-red-500 md:text-[20px]">No records found</p>
+              <tr v-if="filteredQuery.length === 0">
+                <td colspan="5" class="text-center">
+                  <p class="pt-2 font-bold text-red-500 md:text-[20px]">
+                    No records found
+                  </p>
                 </td>
               </tr>
-              <!-- Use filteredQuery for records -->
               <tr v-for="(record, index) in filteredQuery" :key="index">
                 <td class="px-4 py-2 font-normal border border-gray-300">
-                  <!-- {{ record.name }} -->
                   <span v-if="!record.edit">{{ record.name }}</span>
                   <input
                     v-else
@@ -178,7 +177,6 @@ const cancelEdit = (index) => {
                   />
                 </td>
                 <td class="px-4 py-2 font-normal border-2 border-gray-300">
-                  <!-- {{ record.age }} -->
                   <span v-if="!record.edit">{{ record.age }}</span>
                   <input
                     v-else
